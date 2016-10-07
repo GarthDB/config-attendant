@@ -32,6 +32,21 @@ module.exports = function (name, defaults, argv, parse) {
       configFiles.push(file)
     }
   }
+  var packageFile = '';
+  function addPackageJSON (places) {
+    packageFile = cc.find('package.json')
+    if (packageFile) {
+      var packageJSON = require(packageFile)
+      console.log(packageJSON.version)
+      places.forEach(function(place){
+        if ({}.hasOwnProperty.call(packageJSON, place)) {
+          console.log('yay')
+          console.log(packageJSON[place]);
+          configs.push(packageJSON[place])
+        }
+      })
+    }
+  }
 
   // which files do we look at?
   if (!win)
@@ -45,11 +60,12 @@ module.exports = function (name, defaults, argv, parse) {
   addConfigFile(cc.find('.'+name+'rc'))
   if (env.config) addConfigFile(env.config)
   if (argv.config) addConfigFile(argv.config)
-
+  addPackageJSON([name])
   return deepExtend.apply(null, configs.concat([
     env,
     argv,
     configFiles.length ? {configs: configFiles, config: configFiles[configFiles.length - 1]} : undefined,
+    { packageFile: packageFile }
   ]))
 }
 

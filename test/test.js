@@ -57,3 +57,36 @@ assert.equal(commentedJSON.envOption, 42)
 assert.equal(commentedJSON.config, jsonrc)
 assert.equal(commentedJSON.configs.length, 1)
 assert.equal(commentedJSON.configs[0], jsonrc)
+
+var packagePath = path.resolve('package.json')
+var packagePathBak = path.resolve('package_bak.json')
+fs.renameSync(packagePath, packagePathBak)
+
+fs.writeFileSync(packagePath, [
+  '{',
+    '"name": "test",',
+    '"version": "1.0.0",',
+    '"description": "A package.json file used to test added functionality to rc in config-attendant",',
+    '"'+n+'": {',
+      '"option": false,',
+      '"newOption": "yip",',
+      '"envOption": 22',
+    '}',
+  '}'
+].join('\n'));
+
+var packageJSON = require('../')(n, {
+  option: true
+})
+
+fs.unlinkSync(packagePath);
+fs.renameSync(packagePathBak, packagePath)
+
+console.log(packageJSON)
+
+assert.equal(packageJSON.option, false)
+assert.equal(packageJSON.envOption, 42)
+
+assert.equal(packageJSON.config, jsonrc)
+assert.equal(packageJSON.configs.length, 1)
+assert.equal(packageJSON.configs[0], jsonrc)
