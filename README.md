@@ -1,4 +1,4 @@
-# rc
+# rc [![Build Status](https://travis-ci.org/GarthDB/config-attendant.svg?branch=master)](https://travis-ci.org/GarthDB/config-attendant)
 
 The non-configurable configuration loader for lazy people.
 
@@ -141,7 +141,7 @@ such as strict, valid JSON only.
 
 ## Note on Performance
 
-`rc` is running `fs.statSync`-- so make sure you don't use it in a hot code path (e.g. a request handler) 
+`rc` is running `fs.statSync`-- so make sure you don't use it in a hot code path (e.g. a request handler)
 
 
 ## License
