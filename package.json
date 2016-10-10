@@ -5,7 +5,8 @@
   "main": "index.js",
   "browserify": "browser.js",
   "scripts": {
-    "test": "set -e; node test/test.js; node test/ini.js; node test/nested-env-vars.js"
+    "codecov": "nyc report -r lcovonly && codecov",
+    "test": "nyc ava"
   },
   "repository": {
     "type": "git",
@@ -20,14 +21,21 @@
     "package.json"
   ],
   "bin": {
-    "rc": "./index.js"
+    "config": "./index.js"
   },
   "author": "Garth Braithwaite <garthdb@gmail.com> (http://garthdb.com)",
-  "contributors": ["Dominic Tarr <dominic.tarr@gmail.com> (dominictarr.com)"],
+  "contributors": [
+    "Dominic Tarr <dominic.tarr@gmail.com> (dominictarr.com)"
+  ],
   "dependencies": {
     "deep-extend": "~0.4.0",
     "ini": "~1.3.0",
     "minimist": "^1.2.0",
     "strip-json-comments": "~1.0.4"
+  },
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "nixt": "^0.5.0",
+    "nyc": "^8.3.1"
   }
 }

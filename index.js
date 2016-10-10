@@ -37,12 +37,13 @@ module.exports = function (name, defaults, argv, parse) {
     packageFile = cc.find('package.json')
     if (packageFile) {
       var packageJSON = require(packageFile)
-      console.log(packageJSON.version)
       places.forEach(function(place){
         if ({}.hasOwnProperty.call(packageJSON, place)) {
-          console.log('yay')
-          console.log(packageJSON[place]);
-          configs.push(packageJSON[place])
+          configs.push(packageJSON[place]);
+        }
+        if ({}.hasOwnProperty.call(packageJSON, 'config') &&
+          {}.hasOwnProperty.call(packageJSON.config, place)) {
+          configs.push(packageJSON.config[place]);
         }
       })
     }
@@ -60,7 +61,7 @@ module.exports = function (name, defaults, argv, parse) {
   addConfigFile(cc.find('.'+name+'rc'))
   if (env.config) addConfigFile(env.config)
   if (argv.config) addConfigFile(argv.config)
-  addPackageJSON([name])
+  addPackageJSON([name,])
   return deepExtend.apply(null, configs.concat([
     env,
     argv,

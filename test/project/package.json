@@ -1,0 +1,15 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "A package.json file used to test added functionality to rc in config-attendant",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "configrc": {
+    "option": false,
+    "newOption": "yip",
+    "envOption": 22
+  }
+}

@@ -1,92 +1,139 @@
+var test = require('ava');
+var configAttendant = require('../');
+var fs = require('fs');
+var path = require('path');
 
-var n = 'rc'+Math.random()
-var assert = require('assert')
+var n;
 
-process.env[n+'_envOption'] = 42
-
-var config = require('../')(n, {
-  option: true
-})
-
-console.log(config)
-
-assert.equal(config.option, true)
-assert.equal(config.envOption, 42)
-
-var customArgv = require('../')(n, {
-  option: true
-}, { // nopt-like argv
-  option: false,
-  envOption: 24,
-  argv: {
-    remain: [],
-    cooked: ['--no-option', '--envOption', '24'],
-    original: ['--no-option', '--envOption=24']
+function removeProps(obj, props){
+  for (var i = 0; i < props.length; i++) {
+    delete obj[props[i]];
   }
-})
+  return obj;
+}
 
-console.log(customArgv)
+test.before(function(t) {
+  n = 'rc'+Math.random();
+});
 
-assert.equal(customArgv.option, false)
-assert.equal(customArgv.envOption, 24)
+test('Env variable overrides default', function(t) {
+  process.env[n+'_envOption'] = 42
+  var config = configAttendant(n, {
+    option: true
+  });
+  removeProps(config, ['_', 'packageFile']);
+  var expected = {option: true, envOption: '42'}
+  t.deepEqual(config, expected);
+});
 
-var fs = require('fs')
-var path = require('path')
-var jsonrc = path.resolve('.' + n + 'rc');
+test('Custom Argv', function(t) {
+  var config = configAttendant(n, {
+    option: true
+  }, {
+    option: false,
+    envOption: 24,
+    argv: {
+      remain: [],
+      cooked: ['--no-option', '--envOption', '24'],
+      original: ['--no-option', '--envOption=24']
+    }
+  });
+  removeProps(config, ['argv', 'packageFile']);
+  var expected = {option: false, envOption: 24};
+  t.deepEqual(config, expected);
+});
 
-fs.writeFileSync(jsonrc, [
-  '{',
-    '// json overrides default',
-    '"option": false,',
-    '/* env overrides json */',
-    '"envOption": 24',
-  '}'
-].join('\n'));
-
-var commentedJSON = require('../')(n, {
-  option: true
-})
-
-fs.unlinkSync(jsonrc);
-
-console.log(commentedJSON)
-
-assert.equal(commentedJSON.option, false)
-assert.equal(commentedJSON.envOption, 42)
-
-assert.equal(commentedJSON.config, jsonrc)
-assert.equal(commentedJSON.configs.length, 1)
-assert.equal(commentedJSON.configs[0], jsonrc)
-
-var packagePath = path.resolve('package.json')
-var packagePathBak = path.resolve('package_bak.json')
-fs.renameSync(packagePath, packagePathBak)
-
-fs.writeFileSync(packagePath, [
-  '{',
-    '"name": "test",',
-    '"version": "1.0.0",',
-    '"description": "A package.json file used to test added functionality to rc in config-attendant",',
-    '"'+n+'": {',
+test('Json rc', function(t) {
+  var jsonrc = path.resolve('.' + n + 'rc');
+  fs.writeFileSync(jsonrc, [
+    '{',
+      '// json overrides default',
       '"option": false,',
-      '"newOption": "yip",',
-      '"envOption": 22',
-    '}',
-  '}'
-].join('\n'));
+      '/* env overrides json */',
+      '"envOption": 24',
+    '}'
+  ].join('\n'));
+  var config = configAttendant(n, {
+    option: true
+  });
+  fs.unlinkSync(jsonrc);
+  removeProps(config, ['_', 'packageFile']);
+  var expected = {option: false, envOption: '42', config:jsonrc, configs:[jsonrc]};
+  t.deepEqual(config, expected);
+});
 
-var packageJSON = require('../')(n, {
-  option: true
-})
+test('JSON string defaults', function(t) {
+  var config = configAttendant(n, path.resolve('defaults.json'));
+  removeProps(config, ['_', 'packageFile']);
+  var expected = {option: false, envOption: '42'};
+  t.deepEqual(config, expected);
+});
 
-fs.unlinkSync(packagePath);
-fs.renameSync(packagePathBak, packagePath)
+test('JSON string defaults, missing file', function(t) {
+  var config = configAttendant(n, path.resolve('missing.json'));
+  removeProps(config, ['_', 'packageFile']);
+  var expected = {envOption: "42"};
+  t.deepEqual(config, expected);
+});
 
-console.log(packageJSON)
+test('Use env variable to set config default values', function(t) {
+  process.env[n+'_config'] = './defaults.json';
+  var config = configAttendant(n, {
+    option: true
+  });
+  var expected = {
+    option: false,
+    envOption: '42',
+    config: './defaults.json',
+    configs: [ './defaults.json' ]
+  };
+  removeProps(config, ['_', 'packageFile']);
+  t.deepEqual(config, expected);
+  delete process.env[n+'_config'];
+});
 
-assert.equal(packageJSON.option, false)
-assert.equal(packageJSON.envOption, 42)
+test('Nested env variables', function(t) {
+  // Basic usage
+  process.env[n+'_someOpt__a'] = 42
+  process.env[n+'_someOpt__x__'] = 99
+  process.env[n+'_someOpt__a__b'] = 186
+  process.env[n+'_someOpt__a__b__c'] = 243
+  process.env[n+'_someOpt__x__y'] = 1862
+  process.env[n+'_someOpt__z'] = 186577
 
-assert.equal(packageJSON.config, jsonrc)
-assert.equal(packageJSON.configs.length, 1)
-assert.equal(packageJSON.configs[0], jsonrc)
+  // Should ignore empty strings from orphaned '__'
+  process.env[n+'_someOpt__z__x__'] = 18629
+  process.env[n+'_someOpt__w__w__'] = 18629
+
+  // Leading '__' should ignore everything up to 'z'
+  process.env[n+'___z__i__'] = 9999
+
+  var config = configAttendant(n, {
+    option: true
+  })
+
+  var expected = {
+    option: true,
+    envOption: '42',
+    someOpt: {
+      a: '42',
+      x: '99',
+      z: '186577',
+      w: {
+        w: '18629'
+      }
+    },
+    z: { i: '9999' },
+  };
+  removeProps(config, ['_', 'packageFile']);
+  t.deepEqual(config, expected);
+  delete process.env[n+'_someOpt__a'];
+  delete process.env[n+'_someOpt__x__'];
+  delete process.env[n+'_someOpt__a__b'];
+  delete process.env[n+'_someOpt__a__b__c'];
+  delete process.env[n+'_someOpt__x__y'];
+  delete process.env[n+'_someOpt__z'];
+  delete process.env[n+'_someOpt__z__x__'];
+  delete process.env[n+'_someOpt__w__w__'];
+  delete process.env[n+'___z__i__'];
+});
