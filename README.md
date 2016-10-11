@@ -1,6 +1,8 @@
-# Config Attendant [![Build Status](https://travis-ci.org/GarthDB/config-attendant.svg?branch=master)](https://travis-ci.org/GarthDB/config-attendant)
+# Config Attendant
 
-Extended [`rc`](https://github.com/dominictarr/rc) to also include config data in `package.json`. The non-configurable configuration loader for lazy people.
+[![Build Status](https://travis-ci.org/GarthDB/config-attendant.svg?branch=master)](https://travis-ci.org/GarthDB/config-attendant) [![codecov](https://codecov.io/gh/GarthDB/config-attendant/branch/master/graph/badge.svg)](https://codecov.io/gh/GarthDB/config-attendant) [![Dependency Status](https://david-dm.org/GarthDB/config-attendant.svg)](https://david-dm.org/GarthDB/config-attendant) [![npm version](https://badge.fury.io/js/config-attendant.svg)](https://badge.fury.io/js/config-attendant)
+
+---
 
 ## Usage
 
