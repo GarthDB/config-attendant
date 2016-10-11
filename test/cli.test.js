@@ -74,7 +74,7 @@ test.cb('should accept command line arguments', function(t) {
   var configPath = '../defaults.json';
   var expected = {
     "option": false,
-    "envOption": 22,
+    "envOption": 24,
     "_": [
       "foo"
     ],
