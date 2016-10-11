@@ -38,12 +38,12 @@ module.exports = function (name, defaults, argv, parse) {
     if (packageFile) {
       var packageJSON = require(packageFile)
       places.forEach(function(place){
-        if ({}.hasOwnProperty.call(packageJSON, place)) {
-          configs.push(packageJSON[place]);
-        }
         if ({}.hasOwnProperty.call(packageJSON, 'config') &&
           {}.hasOwnProperty.call(packageJSON.config, place)) {
           configs.push(packageJSON.config[place]);
+        }
+        if ({}.hasOwnProperty.call(packageJSON, place)) {
+          configs.push(packageJSON[place]);
         }
       })
     }
@@ -58,10 +58,10 @@ module.exports = function (name, defaults, argv, parse) {
     join(home, '.config', name),
     join(home, '.' + name, 'config'),
     join(home, '.' + name + 'rc')].forEach(addConfigFile)
+  addPackageJSON([name])
   addConfigFile(cc.find('.'+name+'rc'))
   if (env.config) addConfigFile(env.config)
   if (argv.config) addConfigFile(argv.config)
-  addPackageJSON([name,])
   return deepExtend.apply(null, configs.concat([
     env,
     argv,
