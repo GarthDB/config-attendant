@@ -1,6 +1,6 @@
 {
   "name": "config-attendant",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "rc + package.json config data + custom data",
   "main": "index.js",
   "browserify": "browser.js",
