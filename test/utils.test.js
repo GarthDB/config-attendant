@@ -1,10 +1,8 @@
-var test = require('ava');
-var nixt = require('nixt');
-var path = require('path');
+import test from 'ava';
+import cc from '../src/lib/utils';
 
-var cc = require('../lib/utils');
-
-test('file expects string', function(t) {
-  var file = cc.file({option: false});
-  t.is(file, undefined);
+test('file expects string', t => {
+  t.throws(() => {
+    cc.file({ option: false });
+  }, /Path must be a string\./);
 });

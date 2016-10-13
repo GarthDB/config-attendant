@@ -1,14 +1,10 @@
-var test = require('ava');
-var nixt = require('nixt');
-var path = require('path');
+import test from 'ava';
+import INI from 'ini';
+import cc from '../src/lib/utils';
 
-var cc = require('../lib/utils');
-var INI = require('ini');
-
-test('INI parser', function(t) {
-  var _json, _ini;
-  var fixture = {hello: true};
-  var json = cc.parse (_json = JSON.stringify(fixture))
-  var ini = cc.parse (_ini = INI.stringify(fixture))
-  t.deepEqual(json, ini)
+test('INI parser', t => {
+  const fixture = { hello: true };
+  const json = cc.parse(JSON.stringify(fixture));
+  const ini = cc.parse(INI.stringify(fixture));
+  t.deepEqual(json, ini);
 });

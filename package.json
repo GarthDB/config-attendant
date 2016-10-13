@@ -1,16 +1,22 @@
 {
   "name": "config-attendant",
-  "version": "0.0.2",
   "description": "rc + package.json config data + custom data",
-  "main": "index.js",
-  "browserify": "browser.js",
+  "main": "./lib",
+  "browserify": "./lib/browser.js",
   "scripts": {
+    "prepublish": "npm run compile",
+    "compile": "babel -d ./ ./src/",
+    "test": "nyc ava",
+    "coverage": "nyc npm test",
+    "lint": "eslint .",
     "codecov": "nyc report -r lcovonly && codecov",
-    "test": "nyc ava"
+    "checkdocs": "atomdoc src",
+    "validate": "npm run lint && npm run test && npm run checkdocs",
+    "release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dominictarr/rc.git"
+    "url": "https://github.com/GarthDB/config-attendant.git"
   },
   "license": "Apache-2.0",
   "keywords": [
@@ -21,12 +27,33 @@
     "package.json"
   ],
   "bin": {
-    "config": "./index.js"
+    "config": "./bin/index.js"
   },
   "author": "Garth Braithwaite <garthdb@gmail.com> (http://garthdb.com)",
   "contributors": [
     "Dominic Tarr <dominic.tarr@gmail.com> (dominictarr.com)"
   ],
+  "eslintConfig": {
+    "extends": "garthdb"
+  },
+  "ava": {
+    "files": [
+      "test/*.js"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  },
+  "nyc": {
+    "include": [
+      "src/lib/*.js",
+      "bin/index.js"
+    ],
+    "require": [
+      "babel-register"
+    ]
+  },
   "dependencies": {
     "deep-extend": "^0.4.0",
     "ini": "^1.3.0",
@@ -35,8 +62,23 @@
   },
   "devDependencies": {
     "ava": "^0.16.0",
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.17.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-istanbul": "^2.0.1",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-register": "^6.16.3",
     "codecov": "^1.0.1",
+    "cz-customizable": "^4.0.0",
+    "eslint": "^3.7.1",
+    "eslint-config-garthdb": "^0.1.0",
     "nixt": "^0.5.0",
-    "nyc": "^8.3.1"
+    "nyc": "^8.3.1",
+    "semantic-release": "^4.3.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
   }
 }
