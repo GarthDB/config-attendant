@@ -80,5 +80,6 @@
     "commitizen": {
       "path": "./node_modules/cz-customizable"
     }
-  }
+  },
+  "version": "0.1.0"
 }
