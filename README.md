@@ -82,7 +82,7 @@ $ config appname --prop 'value' --config config-attendant/test/defaults.json
 
 ## Standards
 
-Given your application name (`appname`), rc will look in all the obvious places for configuration.
+Given your application name (`appname`), Config Attendant will look in all the obvious places for configuration.
 
   * command line arguments (parsed by minimist)
   * environment variables prefixed with `${appname}_`
