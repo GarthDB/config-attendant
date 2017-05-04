@@ -164,17 +164,17 @@ Comments are stripped from JSON config via [strip-json-comments](https://github.
 
 ### Pass in your own `argv`
 
-You may pass in your own `argv` as the third argument to Config Attendant.  This is in case you want to [use your own command-line opts parser](https://github.com/dominictarr/rc/pull/12).
+You may pass in your own `argv` object as the third argument to Config Attendant.  This is in case you want to [use your own command-line opts parser](https://github.com/dominictarr/rc/pull/12).
 
 ```js
-require('config-attendant')(appname, defaults, customArgvParser);
+require('config-attendant')(appname, defaults, customArgvObject);
 ```
 
 ## Pass in your own parser
 
 If you have a special need to use a non-standard parser,
 you can do so by passing in the parser as the 4th argument.
-(leave the 3rd as null to get the default args parser)
+(leave the 3rd as null to get the default argv object (what `minimist` parses))
 
 ```js
 require('config-attendant')(appname, defaults, null, parser);

@@ -61,7 +61,7 @@ function _addPackageJSON(places, configs) {
  *  * `name` {String} name of the app or process that is used to identify which
  *    config files to load.
  *  * `defaults` (optional) {Object} default values to load in.
- *  * `argv` (optional) {Function} custom argv parser, defaults to
+ *  * `argv` (optional) {Function} custom argv object, defaults to what is parsed by
  *    [minimist](https://www.npmjs.com/package/minimist) if none is provided.
  *  * `parse` (optional) {Function} custom parser, if none is provided, defaults
  *    to utils.parse.
