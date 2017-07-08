@@ -19,7 +19,7 @@ const minimist = require('minimist')(process.argv.slice(2));
  *  * `parse` {Function} used to parse config files.
  */
 function _addConfigFile(file, configs, configFiles, parse) {
-  if (!configFiles.includes(file)) {
+  if (configFiles.indexOf(file) < 0) {
     const fileConfig = cc.file(file);
     if (fileConfig) {
       configs.push(parse(fileConfig));
