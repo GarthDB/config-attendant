@@ -33,7 +33,7 @@ test('should use package.json data', t => {
   const config = configAttendant('foo', {
     option: true,
   });
-  removeProps(config, ['_', 'packageFile']);
+  removeProps(config, ['_', 'packageFile', 'color']);
   t.deepEqual(config, expected);
   process.chdir(initDir);
 });
@@ -49,7 +49,7 @@ test('should use config in package.json data', t => {
   const config = configAttendant('foo', {
     option: true,
   });
-  removeProps(config, ['_', 'packageFile']);
+  removeProps(config, ['_', 'packageFile', 'color']);
   t.deepEqual(config, expected);
   process.chdir(initDir);
 });
@@ -59,7 +59,7 @@ test('Env variable overrides default', t => {
   const config = configAttendant(n, {
     option: true,
   });
-  removeProps(config, ['_', 'packageFile']);
+  removeProps(config, ['_', 'packageFile', 'color']);
   const expected = { option: true, envOption: '42' };
   t.deepEqual(config, expected);
   delete process.env[`${n}_envOption`];
@@ -96,25 +96,26 @@ test('Json rc', t => {
     option: true,
   });
   fs.unlinkSync(jsonrc);
-  removeProps(config, ['_', 'packageFile']);
+  removeProps(config, ['_', 'packageFile', 'color']);
   const expected = { option: false, envOption: 24, config: jsonrc, configs: [jsonrc] };
   t.deepEqual(config, expected);
 });
 
 test('JSON string defaults', t => {
-  const config = configAttendant(n, path.resolve('defaults.json'));
-  removeProps(config, ['_', 'packageFile']);
+  const config = configAttendant(n, path.resolve('test/defaults.json'));
+  removeProps(config, ['_', 'packageFile', 'color']);
   const expected = { option: false, envOption: 24 };
   t.deepEqual(config, expected);
 });
 
 test('JSON string defaults, missing file', t => {
   const config = configAttendant(n, path.resolve('missing.json'));
-  removeProps(config, ['_', 'packageFile']);
+  removeProps(config, ['_', 'packageFile', 'color']);
   t.deepEqual(config, {});
 });
 
 test('Use env variable to set config default values', t => {
+  process.chdir('./test');
   process.env[`${n}_config`] = './defaults.json';
   const config = configAttendant(n, {
     option: true,
@@ -125,7 +126,7 @@ test('Use env variable to set config default values', t => {
     config: './defaults.json',
     configs: ['./defaults.json'],
   };
-  removeProps(config, ['_', 'packageFile']);
+  removeProps(config, ['_', 'packageFile', 'color']);
   t.deepEqual(config, expected);
   delete process.env[`${n}_config`];
 });
@@ -162,7 +163,7 @@ test('Nested env variables', t => {
     },
     z: { i: '9999' },
   };
-  removeProps(config, ['_', 'packageFile']);
+  removeProps(config, ['_', 'packageFile', 'color']);
   t.deepEqual(config, expected);
   delete process.env[`${n}_someOpt__a`];
   delete process.env[`${n}_someOpt__x__`];
@@ -189,7 +190,7 @@ test('should handle config file added more than once', t => {
   const initDir = process.cwd();
   process.chdir(dir);
   const config = configAttendant('thing');
-  removeProps(config, ['_']);
+  removeProps(config, ['_', 'color']);
   t.deepEqual(config, expected);
   process.chdir(initDir);
   delete process.env.thing_config;
