@@ -5,4 +5,4 @@ before_script:
 script:
   - npm run validate
 after_success:
-  - npm run codecov
+  - npm run report-coverage

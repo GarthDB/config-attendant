@@ -5,7 +5,7 @@
   "browserify": "./lib/browser.js",
   "scripts": {
     "prepublish": "npm run compile",
-    "compile": "babel -d ./lib/ ./src/",
+    "compile": "babel -d ./ ./src/",
     "test": "nyc ava",
     "lint": "eslint .",
     "report-coverage": "nyc report -r lcovonly && codecov",
